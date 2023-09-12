@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Cube {
 
@@ -10,6 +12,9 @@ public class Cube {
     private static final EdgeRule[] B_EDGE_RULES = new EdgeRule[] {new EdgeRule('C', 2, true), new EdgeRule('R', 0, false), new EdgeRule('C', 0, true), new EdgeRule('R', 2, false)};
     private static final EdgeRule[] U_EDGE_RULES = new EdgeRule[] {new EdgeRule('R', 0, false), new EdgeRule('R', 0, false), new EdgeRule('R', 0, false), new EdgeRule('R', 0, false)};
     private static final EdgeRule[] D_EDGE_RULES = new EdgeRule[] {new EdgeRule('R', 2, false), new EdgeRule('R', 2, false), new EdgeRule('R', 2, false), new EdgeRule('R', 2, false)};
+
+    private Pattern inputPattern = Pattern.compile("^([FLRBUD])(['2])?$");
+    private Matcher inputMatcher;
 
     public Cube() {
         char[] cells = new char[9];
@@ -57,60 +62,60 @@ public class Cube {
     }
 
 
-    public void makeMove(String move) {
-        switch (move) {
+    public void makeMove(String input) {
+        CubeSide selectedSide = null;
+        EdgeRule[] selectedEdgeRules = null;
+
+        inputMatcher = inputPattern.matcher(input);
+
+        if (!inputMatcher.matches()) {
+            throw new IllegalArgumentException("Invalid move syntax.");
+        }
+
+        switch (inputMatcher.group(1)) {
             case "F":
-                front.rotateClockwise(F_EDGE_RULES);
-                break;
-            
-            case "F'":
-                front.rotateCounterClockwise(F_EDGE_RULES);
+                selectedSide = front;
+                selectedEdgeRules = F_EDGE_RULES;
                 break;
 
             case "L":
-                left.rotateClockwise(L_EDGE_RULES);
+                selectedSide = left;
+                selectedEdgeRules = L_EDGE_RULES;
                 break;
-            
-            case "L'":
-                left.rotateCounterClockwise(L_EDGE_RULES);
-                break;
-
 
             case "R":
-                right.rotateClockwise(R_EDGE_RULES);
+                selectedSide = right;
+                selectedEdgeRules = R_EDGE_RULES;
                 break;
             
-            case "R'":
-                right.rotateCounterClockwise(R_EDGE_RULES);
-                break;
-
             case "B":
-                back.rotateClockwise(B_EDGE_RULES);
+                selectedSide = back;
+                selectedEdgeRules = B_EDGE_RULES;
                 break;
-            
-            case "B'":
-                back.rotateCounterClockwise(B_EDGE_RULES);
-                break;
-
 
             case "U":
-                up.rotateClockwise(U_EDGE_RULES);
+                selectedSide = up;
+                selectedEdgeRules = U_EDGE_RULES;
                 break;
             
-            case "U'":
-                up.rotateCounterClockwise(U_EDGE_RULES);
-                break;
-  
-
             case "D":
-                down.rotateClockwise(D_EDGE_RULES);
+                selectedSide = down;
+                selectedEdgeRules = D_EDGE_RULES;
+                break;
+        }
+
+        if (inputMatcher.group(2) == null) {
+            selectedSide.rotateClockwise(selectedEdgeRules);
+        }
+        else switch (inputMatcher.group(2)) {
+            case "2":
+                selectedSide.rotateClockwise(selectedEdgeRules);
+                selectedSide.rotateClockwise(selectedEdgeRules);
                 break;
             
-            case "D'":
-                down.rotateCounterClockwise(D_EDGE_RULES);
+            case "'":
+                selectedSide.rotateCounterClockwise(selectedEdgeRules);
                 break;
-
-
         }
 
         printCube();
