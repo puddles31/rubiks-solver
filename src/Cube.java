@@ -47,6 +47,25 @@ public class Cube {
         printCube();
     }
 
+
+    public Cube(char[] allCells) {
+        front = new CubeSide(Arrays.copyOfRange(allCells, 0, 9));
+        left = new CubeSide(Arrays.copyOfRange(allCells, 9, 18));
+        right = new CubeSide(Arrays.copyOfRange(allCells, 18, 27));
+        back = new CubeSide(Arrays.copyOfRange(allCells, 27, 36));
+        up = new CubeSide(Arrays.copyOfRange(allCells, 36, 45));
+        down = new CubeSide(Arrays.copyOfRange(allCells, 45, 54));
+
+        front.setAdjacentSides(new CubeSide[]{left, up, right, down});
+        left.setAdjacentSides(new CubeSide[]{back, up, front, down});
+        right.setAdjacentSides(new CubeSide[]{front, up, back, down});
+        back.setAdjacentSides(new CubeSide[]{right, up, left, down});
+        up.setAdjacentSides(new CubeSide[]{left, back, right, front});
+        down.setAdjacentSides(new CubeSide[]{left, front, right, back});
+
+        printCube();
+    }
+
     public void printCube() {
         up.printSide(7);
         
