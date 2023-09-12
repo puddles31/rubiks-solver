@@ -64,7 +64,7 @@ public class CubeSide {
 
     private char[] updateCol(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
         saveNew = side.getCol(sideNo);
-        System.out.println("Setting column " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[0] + ", " + saveOld[1] + ", " + saveOld[2] + "]");
+        // System.out.println("Setting column " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[0] + ", " + saveOld[1] + ", " + saveOld[2] + "]");
         
         if (reverseOrder) {
             side.setCol(sideNo, reverse(saveOld));
@@ -78,7 +78,7 @@ public class CubeSide {
 
     private char[] updateRow(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
         saveNew = side.getRow(sideNo);
-        System.out.println("Setting row " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[2] + ", " + saveOld[1] + ", " + saveOld[0] + "]");
+        // System.out.println("Setting row " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[2] + ", " + saveOld[1] + ", " + saveOld[0] + "]");
 
         if (reverseOrder) {
             side.setRow(sideNo, reverse(saveOld));

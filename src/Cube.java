@@ -4,40 +4,32 @@ public class Cube {
 
     private CubeSide front, left, right, back, up, down;
 
+    private static final EdgeRule[] F_EDGE_RULES = new EdgeRule[] {new EdgeRule('C', 2, false), new EdgeRule('R', 2, true), new EdgeRule('C', 0, false), new EdgeRule('R', 0, true)};
+    private static final EdgeRule[] L_EDGE_RULES = new EdgeRule[] {new EdgeRule('C', 2, true), new EdgeRule('C', 0, true), new EdgeRule('C', 0, false), new EdgeRule('C', 0, false)};
+    private static final EdgeRule[] R_EDGE_RULES = new EdgeRule[] {new EdgeRule('C', 2, false), new EdgeRule('C', 2, false), new EdgeRule('C', 0, true), new EdgeRule('C', 2, true)};
+    private static final EdgeRule[] B_EDGE_RULES = new EdgeRule[] {new EdgeRule('C', 2, true), new EdgeRule('R', 0, false), new EdgeRule('C', 0, true), new EdgeRule('R', 2, false)};
+    private static final EdgeRule[] U_EDGE_RULES = new EdgeRule[] {new EdgeRule('R', 0, false), new EdgeRule('R', 0, false), new EdgeRule('R', 0, false), new EdgeRule('R', 0, false)};
+    private static final EdgeRule[] D_EDGE_RULES = new EdgeRule[] {new EdgeRule('R', 2, false), new EdgeRule('R', 2, false), new EdgeRule('R', 2, false), new EdgeRule('R', 2, false)};
+
     public Cube() {
-        char[] cells = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'};
+        char[] cells = new char[9];
         
-        // Arrays.fill(cells, 'F');
+        Arrays.fill(cells, 'R');
         front = new CubeSide(cells);
 
-        // Arrays.fill(cells, 'L');
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] += 9;
-        }
+        Arrays.fill(cells, 'G');
         left = new CubeSide(cells);
 
-        // Arrays.fill(cells, 'R');
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] += 9;
-        }
+        Arrays.fill(cells, 'B');
         right = new CubeSide(cells);
 
-        // Arrays.fill(cells, 'B');
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] += 9;
-        }
+        Arrays.fill(cells, 'O');
         back = new CubeSide(cells);
 
-        // Arrays.fill(cells, 'U');
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] += 9;
-        }
+        Arrays.fill(cells, 'W');
         up = new CubeSide(cells);
 
-        // Arrays.fill(cells, 'D');
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] += 9;
-        }
+        Arrays.fill(cells, 'Y');
         down = new CubeSide(cells);
         
         front.setAdjacentSides(new CubeSide[]{left, up, right, down});
@@ -47,17 +39,10 @@ public class Cube {
         up.setAdjacentSides(new CubeSide[]{left, back, right, front});
         down.setAdjacentSides(new CubeSide[]{left, front, right, back});
 
-        print();
-
-        // front.rotateClockwise(new EdgeRule[] {new EdgeRule('C', 2, false), new EdgeRule('R', 2, true), new EdgeRule('C', 0, false), new EdgeRule('R', 0, true)});
-        // left.rotateClockwise(new EdgeRule[] {new EdgeRule('C', 2, true), new EdgeRule('C', 0, true), new EdgeRule('C', 0, false), new EdgeRule('C', 0, false)});
-        // right.rotateClockwise(new EdgeRule[] {new EdgeRule('C', 2, false), new EdgeRule('C', 2, false), new EdgeRule('C', 0, true), new EdgeRule('C', 2, true)});
-        // back.rotateClockwise(new EdgeRule[] {new EdgeRule('C', 2, true), new EdgeRule('R', 0, false), new EdgeRule('C', 0, true), new EdgeRule('R', 2, false)});
-        // up.rotateClockwise(new EdgeRule[] {new EdgeRule('R', 0, false), new EdgeRule('R', 0, false), new EdgeRule('R', 0, false), new EdgeRule('R', 0, false)});
-        // down.rotateClockwise(new EdgeRule[] {new EdgeRule('R', 2, false), new EdgeRule('R', 2, false), new EdgeRule('R', 2, false), new EdgeRule('R', 2, false)});
+        printCube();
     }
 
-    public void print() {
+    public void printCube() {
         up.printSide(7);
         
         for (int i = 0; i < 3; i++) {
@@ -69,5 +54,37 @@ public class Cube {
         }
         
         down.printSide(7);
+    }
+
+
+    public void makeMove(String move) {
+        switch (move) {
+            case "F":
+                front.rotateClockwise(F_EDGE_RULES);
+                break;
+            
+            case "L":
+                left.rotateClockwise(L_EDGE_RULES);
+                break;
+            
+            case "R":
+                right.rotateClockwise(R_EDGE_RULES);
+                break;
+            
+            case "B":
+                back.rotateClockwise(B_EDGE_RULES);
+                break;
+            
+            case "U":
+                up.rotateClockwise(U_EDGE_RULES);
+                break;
+            
+            case "D":
+                down.rotateClockwise(D_EDGE_RULES);
+                break;
+            
+        }
+
+        printCube();
     }
 }
