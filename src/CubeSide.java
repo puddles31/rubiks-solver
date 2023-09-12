@@ -25,6 +25,37 @@ public class CubeSide {
     }
 
 
+
+
+    private char[] updateCol(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
+        saveNew = side.getCol(sideNo);
+        // System.out.println("Setting column " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[0] + ", " + saveOld[1] + ", " + saveOld[2] + "]");
+        
+        if (reverseOrder) {
+            side.setCol(sideNo, reverse(saveOld));
+        }
+        else {
+            side.setCol(sideNo, saveOld);
+        }
+
+        return saveNew.clone();
+    }
+
+    private char[] updateRow(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
+        saveNew = side.getRow(sideNo);
+        // System.out.println("Setting row " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[2] + ", " + saveOld[1] + ", " + saveOld[0] + "]");
+
+        if (reverseOrder) {
+            side.setRow(sideNo, reverse(saveOld));
+        }
+        else {
+            side.setRow(sideNo, saveOld);
+        }
+
+        return saveNew.clone();
+    }
+
+
     public void rotateClockwise(EdgeRule[] edgeRules) {
         // Make a copy of the current face
         char[][] faceCopy = new char[3][3];
@@ -62,51 +93,50 @@ public class CubeSide {
         }
     }
 
-    private char[] updateCol(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
-        saveNew = side.getCol(sideNo);
-        // System.out.println("Setting column " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[0] + ", " + saveOld[1] + ", " + saveOld[2] + "]");
-        
-        if (reverseOrder) {
-            side.setCol(sideNo, reverse(saveOld));
-        }
-        else {
-            side.setCol(sideNo, saveOld);
-        }
-
-        return saveNew.clone();
-    }
-
-    private char[] updateRow(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
-        saveNew = side.getRow(sideNo);
-        // System.out.println("Setting row " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[2] + ", " + saveOld[1] + ", " + saveOld[0] + "]");
-
-        if (reverseOrder) {
-            side.setRow(sideNo, reverse(saveOld));
-        }
-        else {
-            side.setRow(sideNo, saveOld);
-        }
-
-        return saveNew.clone();
-    }
-
-    public void rotateCounterClockwise() {
+    public void rotateCounterClockwise(EdgeRule[] edgeRules) {
+        // Make a copy of the current face
         char[][] faceCopy = new char[3][3];
         for (int i = 0; i < 3; i++) {
             faceCopy[i] = face[i].clone();
         }
 
+        // Rotate the current face
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 face[2-j][i] = faceCopy[i][j];
             }
         }
+
+
+        char[] saveNew = new char[3];
+        char[] saveOld = null;
+        
+        if (edgeRules[0].getSideType() == 'R') {
+            saveOld = adjacentSides[0].getRow(edgeRules[0].getSideNo());
+        }
+        else if (edgeRules[0].getSideType() == 'C') {
+            saveOld = adjacentSides[0].getCol(edgeRules[0].getSideNo());
+        }
+        
+        for (int i = adjacentSides.length - 1; i >= 0; i--) {
+            
+            if (edgeRules[i].getSideType() == 'R') {
+                saveOld = updateRow(adjacentSides[i], edgeRules[i].getSideNo(), edgeRules[(i + 1) % edgeRules.length].getReverseOrder(), saveNew, saveOld);
+            }
+            else if (edgeRules[i].getSideType() == 'C') {
+                saveOld = updateCol(adjacentSides[i], edgeRules[i].getSideNo(), edgeRules[(i + 1) % edgeRules.length].getReverseOrder(), saveNew, saveOld);
+            }
+        
+        }
     }
 
+    
 
     private char[] reverse(char[] arr) {
         return new char[] {arr[2], arr[1], arr[0]};
     }
+
+
 
 
     public char[] getRow(int rowNo) {
@@ -122,6 +152,7 @@ public class CubeSide {
     }
 
 
+
     public char[] getCol(int colNo) {
         return new char[] {face[0][colNo], face[1][colNo], face[2][colNo]};
     }
@@ -135,6 +166,7 @@ public class CubeSide {
             face[i][colNo] = newCol[i];
         }
     }
+
 
 
     public void printRow(int rowNo) {

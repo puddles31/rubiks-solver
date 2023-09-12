@@ -63,26 +63,54 @@ public class Cube {
                 front.rotateClockwise(F_EDGE_RULES);
                 break;
             
+            case "F'":
+                front.rotateCounterClockwise(F_EDGE_RULES);
+                break;
+
             case "L":
                 left.rotateClockwise(L_EDGE_RULES);
                 break;
             
+            case "L'":
+                left.rotateCounterClockwise(L_EDGE_RULES);
+                break;
+
+
             case "R":
                 right.rotateClockwise(R_EDGE_RULES);
                 break;
             
+            case "R'":
+                right.rotateCounterClockwise(R_EDGE_RULES);
+                break;
+
             case "B":
                 back.rotateClockwise(B_EDGE_RULES);
                 break;
             
+            case "B'":
+                back.rotateCounterClockwise(B_EDGE_RULES);
+                break;
+
+
             case "U":
                 up.rotateClockwise(U_EDGE_RULES);
                 break;
             
+            case "U'":
+                up.rotateCounterClockwise(U_EDGE_RULES);
+                break;
+  
+
             case "D":
                 down.rotateClockwise(D_EDGE_RULES);
                 break;
             
+            case "D'":
+                down.rotateCounterClockwise(D_EDGE_RULES);
+                break;
+
+
         }
 
         printCube();
