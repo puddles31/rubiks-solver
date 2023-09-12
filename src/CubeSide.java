@@ -25,12 +25,14 @@ public class CubeSide {
     }
 
 
-    public void rotateClockwise() {
+    public void rotateClockwise(EdgeRule[] edgeRules) {
+        // Make a copy of the current face
         char[][] faceCopy = new char[3][3];
         for (int i = 0; i < 3; i++) {
             faceCopy[i] = face[i].clone();
         }
 
+        // Rotate the current face
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 face[j][2-i] = faceCopy[i][j];
@@ -39,34 +41,53 @@ public class CubeSide {
 
 
         char[] saveNew = new char[3];
-        char[] saveOld = adjacentSides[3].getRow(0);
-        int sideNo;
-
-
-        // TODO: fix this
-        // only works when rotating front
-        // note that perspective is important! the closest row to the side might be the furthest row overall
-        for (int i = 0; i < adjacentSides.length; i++) {
-            if (i < 2) {
-                sideNo = 2;
-            }
-            else {
-                sideNo = 0;
-            }
-
-            if (i % 2 == 0) {
-                saveNew = adjacentSides[i].getCol(sideNo);
-                System.out.println("Setting column " + sideNo + " in side " + i + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[0] + ", " + saveOld[1] + ", " + saveOld[2] + "]");
-                adjacentSides[i].setCol(sideNo, saveOld);
-                saveOld = saveNew.clone();
-            }
-            else {
-                saveNew = adjacentSides[i].getRow(sideNo);
-                System.out.println("Setting row " + sideNo + " in side " + i + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[2] + ", " + saveOld[1] + ", " + saveOld[0] + "]");
-                adjacentSides[i].setRow(sideNo, reverse(saveOld));
-                saveOld = saveNew.clone();
-            }
+        char[] saveOld = null;
+        
+        if (edgeRules[3].getSideType() == 'R') {
+            saveOld = adjacentSides[3].getRow(edgeRules[3].getSideNo());
         }
+        else if (edgeRules[3].getSideType() == 'C') {
+            saveOld = adjacentSides[3].getCol(edgeRules[3].getSideNo());
+        }
+        
+        for (int i = 0; i < adjacentSides.length; i++) {
+            
+            if (edgeRules[i].getSideType() == 'R') {
+                saveOld = updateRow(adjacentSides[i], edgeRules[i].getSideNo(), edgeRules[i].getReverseOrder(), saveNew, saveOld);
+            }
+            else if (edgeRules[i].getSideType() == 'C') {
+                saveOld = updateCol(adjacentSides[i], edgeRules[i].getSideNo(), edgeRules[i].getReverseOrder(), saveNew, saveOld);
+            }
+        
+        }
+    }
+
+    private char[] updateCol(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
+        saveNew = side.getCol(sideNo);
+        System.out.println("Setting column " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[0] + ", " + saveOld[1] + ", " + saveOld[2] + "]");
+        
+        if (reverseOrder) {
+            side.setCol(sideNo, reverse(saveOld));
+        }
+        else {
+            side.setCol(sideNo, saveOld);
+        }
+
+        return saveNew.clone();
+    }
+
+    private char[] updateRow(CubeSide side, int sideNo, boolean reverseOrder, char[] saveNew, char[] saveOld) {
+        saveNew = side.getRow(sideNo);
+        System.out.println("Setting row " + sideNo + " from [" + saveNew[0] + ", " + saveNew[1] + ", " + saveNew[2] + "] to [" + saveOld[2] + ", " + saveOld[1] + ", " + saveOld[0] + "]");
+
+        if (reverseOrder) {
+            side.setRow(sideNo, reverse(saveOld));
+        }
+        else {
+            side.setRow(sideNo, saveOld);
+        }
+
+        return saveNew.clone();
     }
 
     public void rotateCounterClockwise() {
