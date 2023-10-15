@@ -5,21 +5,23 @@ public class Solver {
 
 
     public static void main(String[] args) {
-        newCubeMode();
+        // newCubeMode();
+        interactiveMode();
     }
 
 
+    // Start with default cube (already solved), then interact with it
     private static void interactiveMode() {
         Cube cube = new Cube();
 
         Scanner sc = new Scanner(System.in);
         String input = "";
 
-        while (!input.equals("X")) {
-            System.out.println("Enter a move:");
-            input = sc.nextLine();
+        while (!input.equals("QUIT")) {
+            System.out.println("Enter a move (or 'QUIT' to quit):");
+            input = sc.nextLine().toUpperCase();
 
-            if (!input.equals("X")) {
+            if (!input.equals("QUIT")) {
                 cube.makeMove(input);
             }
         }
@@ -28,6 +30,7 @@ public class Solver {
     }
 
 
+    // First ask user to create a cube by entering colours of each cell, then interact with it
     private static void newCubeMode() {
         char[] inputColours = new char[54];
 
@@ -40,7 +43,7 @@ public class Solver {
 
                 while (!input.equals("W") && !input.equals("G") && !input.equals("R") && !input.equals("B") && !input.equals("O") && !input.equals("Y")) {
                     System.out.println("Enter the colour of cell " + j + " on face " + (i + 1) + ":");
-                    input = sc.nextLine();
+                    input = sc.nextLine().toUpperCase();
                 }
                 
                 inputColours[(9 * i) + j] = input.charAt(0);
@@ -49,11 +52,11 @@ public class Solver {
 
         Cube cube = new Cube(inputColours);
 
-        while (!input.equals("X")) {
-            System.out.println("Enter a move:");
-            input = sc.nextLine();
+        while (!input.equals("QUIT")) {
+            System.out.println("Enter a move (or 'QUIT' to quit):");
+            input = sc.nextLine().toUpperCase();
 
-            if (!input.equals("X")) {
+            if (!input.equals("QUIT")) {
                 cube.makeMove(input);
             }
         }

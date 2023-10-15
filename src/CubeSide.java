@@ -132,7 +132,7 @@ public class CubeSide {
 
     
 
-    private char[] reverse(char[] arr) {
+    public static char[] reverse(char[] arr) {
         return new char[] {arr[2], arr[1], arr[0]};
     }
 
