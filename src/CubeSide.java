@@ -168,6 +168,10 @@ public class CubeSide {
     }
 
 
+    public char getCell(int row, int col) {
+        return face[row][col];
+    }
+
 
     public void printRow(int rowNo) {
         System.out.print(face[rowNo][0] + " " + face[rowNo][1] + " " + face[rowNo][2] + "  ");

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 public class Cube {
 
     // A Cube has 6 CubeSides:
-    private CubeSide front, left, right, back, up, down;
+    public CubeSide front, left, right, back, up, down;
 
     // Define the rules for each edge when being moved
     private static final EdgeRule[] F_EDGE_RULES = new EdgeRule[] {new EdgeRule('C', 2, false), new EdgeRule('R', 2, true), new EdgeRule('C', 0, false), new EdgeRule('R', 0, true)};
@@ -94,6 +94,8 @@ public class Cube {
 
     // Given an input string, make a move
     public void makeMove(String input) {
+        System.out.println(input);
+
         inputMatcher = inputPattern.matcher(input);
 
         // First, check that the move is valid by matching it against the regex pattern
@@ -207,11 +209,11 @@ public class Cube {
             
         }
 
-        printCube();
+        // printCube();
     }
 
 
-    public void middleTurn(boolean counterClockwise) {
+    private void middleTurn(boolean counterClockwise) {
         // Make copy of middle column on front face
         char[] frontCol = front.getCol(1);
 
@@ -230,7 +232,7 @@ public class Cube {
         
     }
 
-    public void equatorialTurn(boolean counterClockwise) {
+    private void equatorialTurn(boolean counterClockwise) {
         // Make copy of middle row on front face
         char[] frontRow = front.getRow(1);
 
@@ -248,7 +250,7 @@ public class Cube {
         }
     }
 
-    public void standingTurn(boolean counterClockwise) {
+    private void standingTurn(boolean counterClockwise) {
         // Make copy of middle row on up face
         char[] upRow = up.getRow(1);
 
@@ -266,7 +268,7 @@ public class Cube {
         }
     }
 
-    public void rotateCubeOnX(boolean counterClockwise) {
+    private void rotateCubeOnX(boolean counterClockwise) {
         if (!counterClockwise) {
             left.rotateCounterClockwise(L_EDGE_RULES);
             middleTurn(true);
@@ -279,7 +281,7 @@ public class Cube {
         }
     }
 
-    public void rotateCubeOnY(boolean counterClockwise) {
+    private void rotateCubeOnY(boolean counterClockwise) {
         if (!counterClockwise) {
             up.rotateClockwise(U_EDGE_RULES);
             equatorialTurn(true);
@@ -292,7 +294,7 @@ public class Cube {
         }
     }
 
-    public void rotateCubeOnZ(boolean counterClockwise) {
+    private void rotateCubeOnZ(boolean counterClockwise) {
         if (!counterClockwise) {
             back.rotateCounterClockwise(B_EDGE_RULES);
             standingTurn(false);

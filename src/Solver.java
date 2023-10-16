@@ -1,3 +1,7 @@
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Solver {
@@ -5,15 +9,35 @@ public class Solver {
 
 
     public static void main(String[] args) {
-        // newCubeMode();
-        interactiveMode();
+        // Setup dummy print stream to disable println
+        PrintStream originalStream = System.out;
+
+        PrintStream dummyStream = new PrintStream(new OutputStream(){
+            public void write(int b) { }
+        });
+
+        System.setOut(dummyStream);
+
+
+        // Create a new cube and shuffle it
+        Cube cube = new Cube();
+        ArrayList<String> shuffleMoves = new ArrayList<String>();
+        shuffleCube(cube, shuffleMoves);
+
+        // Enable the original print stream
+        System.setOut(originalStream);
+
+        // Print cube, solve it
+        System.out.println("Shuffle moves:\n" + shuffleMoves.toString());
+        System.out.println("Initial cube state:");
+        cube.printCube();
+        solve(cube);
+
     }
 
 
     // Start with default cube (already solved), then interact with it
-    private static void interactiveMode() {
-        Cube cube = new Cube();
-
+    private static void interactiveMode(Cube cube) {
         Scanner sc = new Scanner(System.in);
         String input = "";
 
@@ -30,8 +54,8 @@ public class Solver {
     }
 
 
-    // First ask user to create a cube by entering colours of each cell, then interact with it
-    private static void newCubeMode() {
+    // Create a cube by using user input for colour of each cell
+    private static Cube makeNewCube() {
         char[] inputColours = new char[54];
 
         Scanner sc = new Scanner(System.in);
@@ -50,17 +74,196 @@ public class Solver {
             }
         }
 
-        Cube cube = new Cube(inputColours);
+        sc.close();
+        return new Cube(inputColours);
+    }
 
-        while (!input.equals("QUIT")) {
-            System.out.println("Enter a move (or 'QUIT' to quit):");
-            input = sc.nextLine().toUpperCase();
+    private static Cube shuffleCube(Cube cube, ArrayList<String> movesMade) {
+        Random rand = new Random();
+        String[] possibleMoves = new String[] {
+            "F",  "L",  "R",  "B",  "U",  "D",
+            "F'", "L'", "R'", "B'", "U'", "D'",
+            "F2", "L2", "R2", "B2", "U2", "D2"
+        };
 
-            if (!input.equals("QUIT")) {
-                cube.makeMove(input);
-            }
+        // Make 50 random moves
+        for (int i = 0; i < 25; i++) {
+            int randInt = rand.nextInt(possibleMoves.length);
+            cube.makeMove(possibleMoves[randInt]);
+            movesMade.add(possibleMoves[randInt]);
         }
 
-        sc.close();
+        return cube;
+    }
+
+    private static ArrayList<String> solve(Cube cube) {
+        System.out.println("-------- Solving Cube --------");
+        ArrayList<String> movesMade = new ArrayList<String>();
+
+        System.out.println("--- Stage 1: White Cross ---");
+        // Get the white center piece on top of cube
+        if (cube.front.getCell(1, 1) == 'W') {
+            cube.makeMove("X");
+        }
+        else if (cube.left.getCell(1, 1) == 'W') {
+            cube.makeMove("Z");
+        }
+        else if (cube.right.getCell(1, 1) == 'W') {
+            cube.makeMove("Z'");
+        }
+        else if (cube.back.getCell(1, 1) == 'W') {
+            cube.makeMove("X'");
+        }
+        else if (cube.down.getCell(1, 1) == 'W') {
+            cube.makeMove("X2");
+        }
+
+        
+        // Get the red center piece on front of cube
+        if (cube.left.getCell(1, 1) == 'R') {
+            cube.makeMove("Y'");
+        }
+        else if (cube.right.getCell(1, 1) == 'R') {
+            cube.makeMove("Y");
+        }
+        else if (cube.back.getCell(1, 1) == 'R') {
+            cube.makeMove("Y2");
+        }
+
+
+        char[] sideColours = new char[] {'R', 'B', 'O', 'G'};
+
+        // Move each white edge piece into position
+        for (char colour : sideColours) {
+
+            // Case 1: piece on bottom face
+            if (cube.down.getCell(0, 1) == 'W' && cube.front.getCell(2, 1) == colour) {
+                cube.makeMove("F2");
+            }
+            else if (cube.down.getCell(1, 0) == 'W' && cube.left.getCell(2, 1) == colour) {
+                cube.makeMove("D");
+                cube.makeMove("F2");
+            }
+            else if (cube.down.getCell(1, 2) == 'W' && cube.right.getCell(2, 1) == colour) {
+                cube.makeMove("D'");
+                cube.makeMove("F2");
+            }
+            else if (cube.down.getCell(2, 1) == 'W' && cube.back.getCell(2, 1) == colour) {
+                cube.makeMove("D2");
+                cube.makeMove("F2");
+            }
+            // Case 2: piece on bottom layer, facing outwards
+            else if (cube.front.getCell(2, 1) == 'W' && cube.down.getCell(0, 1) == colour) {
+                cube.makeMove("F");
+                cube.makeMove("E");
+                cube.makeMove("F'");
+            }
+            else if (cube.left.getCell(2, 1) == 'W' && cube.down.getCell(1, 0) == colour) {
+                cube.makeMove("D");
+                cube.makeMove("F");
+                cube.makeMove("E");
+                cube.makeMove("F'");
+            }
+            else if (cube.right.getCell(2, 1) == 'W' && cube.down.getCell(1, 2) == colour) {
+                cube.makeMove("D'");
+                cube.makeMove("F");
+                cube.makeMove("E");
+                cube.makeMove("F'");
+            }
+            else if (cube.back.getCell(2, 1) == 'W' && cube.down.getCell(2, 1) == colour) {
+                cube.makeMove("D2");
+                cube.makeMove("F");
+                cube.makeMove("E");
+                cube.makeMove("F'");
+            }
+            // Case 3: piece on middle layer
+            else if (cube.front.getCell(1, 2) == 'W' && cube.right.getCell(1, 0) == colour) {
+                cube.makeMove("E'");
+                cube.makeMove("F");
+            }
+            else if (cube.left.getCell(1, 2) == 'W' && cube.front.getCell(1, 0) == colour) {
+                cube.makeMove("F");
+            }
+            else if (cube.right.getCell(1, 2) == 'W' && cube.back.getCell(1, 0) == colour) {
+                cube.makeMove("E2");
+                cube.makeMove("F");
+            }
+            else if (cube.back.getCell(1, 2) == 'W' && cube.left.getCell(1, 0) == colour) {
+                cube.makeMove("E");
+                cube.makeMove("F");
+            }
+            else if (cube.front.getCell(1, 0) == 'W' && cube.left.getCell(1, 2) == colour) {
+                cube.makeMove("E");
+                cube.makeMove("F'");
+            }
+            else if (cube.left.getCell(1, 0) == 'W' && cube.back.getCell(1, 2) == colour) {
+                cube.makeMove("E2");
+                cube.makeMove("F'");
+            }
+            else if (cube.right.getCell(1, 0) == 'W' && cube.front.getCell(1, 2) == colour) {
+                cube.makeMove("F'");
+            }
+            else if (cube.back.getCell(1, 0) == 'W' && cube.right.getCell(1, 2) == colour) {
+                cube.makeMove("E'");
+                cube.makeMove("F'");
+            }
+            // Case 4: piece on top layer, facing outwards
+            else if (cube.front.getCell(0, 1) == 'W' && cube.up.getCell(2, 1) == colour) {
+                cube.makeMove("F");
+                cube.makeMove("E'");
+                cube.makeMove("F");
+            }
+            else if (cube.left.getCell(0, 1) == 'W' && cube.up.getCell(1, 0) == colour) {
+                cube.makeMove("L");
+                cube.makeMove("F");
+            }
+            else if (cube.right.getCell(0, 1) == 'W' && cube.up.getCell(1, 2) == colour) {
+                cube.makeMove("R'");
+                cube.makeMove("F'");
+            }
+            else if (cube.back.getCell(0, 1) == 'W' && cube.up.getCell(0, 1) == colour) {
+                cube.makeMove("B");
+                cube.makeMove("E");
+                cube.makeMove("F");
+            }
+            // Case 5: piece on top face
+            else if (cube.up.getCell(1, 0) == 'W' && cube.left.getCell(0, 1) == colour) {
+                // we can assume that this is the first colour (red), otherwise the piece couldn't be in this position
+                cube.makeMove("U'");
+            }
+            else if (cube.up.getCell(1, 2) == 'W' && cube.right.getCell(0, 1) == colour) {
+                cube.makeMove("R'");
+                cube.makeMove("E'");
+                cube.makeMove("F");
+            }
+            else if (cube.up.getCell(0, 1) == 'W' && cube.back.getCell(0, 1) == colour) {
+                cube.makeMove("B");
+                cube.makeMove("E2");
+                cube.makeMove("F'");
+            }
+
+            cube.makeMove("Y");
+        }
+
+        // Line up edges with center pieces
+        if (cube.left.getCell(1, 1) == 'R') {
+            cube.makeMove("E");
+        }
+        else if (cube.right.getCell(1, 1) == 'R') {
+            cube.makeMove("E'");
+        }
+        else if (cube.back.getCell(1, 1) == 'R') {
+            cube.makeMove("E2");
+        }
+
+
+
+
+        System.out.println("--- Stage 2: White Corners ---");
+
+        cube.printCube();
+
+
+        return movesMade;
     }
 }
