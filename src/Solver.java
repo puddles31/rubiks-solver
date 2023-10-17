@@ -416,6 +416,53 @@ public class Solver {
 
         cube.printCube();
 
+        System.out.println("--- Stage 4: Yellow Cross ---");
+
+        if (cube.up.getCell(0, 1) != 'Y' && cube.up.getCell(1, 0) != 'Y' && cube.up.getCell(1, 2) != 'Y' && cube.up.getCell(2, 1) != 'Y') {
+            // scenario 1: yellow dot
+            cube.makeMove("F");
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U'");
+            cube.makeMove("R'");
+            cube.makeMove("F'");
+        }
+        if (cube.up.getCell(0, 1) == 'Y' && cube.up.getCell(2, 1) == 'Y') {
+            // scenario 2: yellow line (vertical)
+            cube.makeMove("Y");
+        }
+        if (cube.up.getCell(1, 0) == 'Y' && cube.up.getCell(1, 2) == 'Y') {
+            // scenario 2: yellow line (horizontal)
+            cube.makeMove("F");
+            cube.makeMove("R");
+            cube.makeMove("U");
+            cube.makeMove("R'");
+            cube.makeMove("U'");
+            cube.makeMove("F'");
+        }
+
+        if (!(cube.up.getCell(0, 1) == 'Y' && cube.up.getCell(1, 0) == 'Y' && cube.up.getCell(1, 2) == 'Y' && cube.up.getCell(2, 1) == 'Y')) {
+            // scenario 3: yellow L - orient into correct position first
+            if (cube.up.getCell(0, 1) == 'Y' && cube.up.getCell(1, 2) == 'Y') {
+                cube.makeMove("Y'");
+            }
+            else if (cube.up.getCell(1, 0) == 'Y' && cube.up.getCell(2, 1) == 'Y') {
+                cube.makeMove("Y");
+            }
+            else if (cube.up.getCell(1, 2) == 'Y' && cube.up.getCell(2, 1) == 'Y') {
+                cube.makeMove("Y2");
+            }
+
+            cube.makeMove("F");
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U'");
+            cube.makeMove("R'");
+            cube.makeMove("F'");
+        }
+        
+        cube.printCube();
+
         return movesMade;
     }
 }
