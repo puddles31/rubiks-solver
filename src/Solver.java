@@ -256,13 +256,77 @@ public class Solver {
             cube.makeMove("E2");
         }
 
-
-
+        cube.printCube();
 
         System.out.println("--- Stage 2: White Corners ---");
 
-        cube.printCube();
+        // Start with red-green corner
 
+
+        String[] cornerCombinations = new String[] {"WGR", "WRB", "WBO", "WOG"};
+
+        for (String cornerCombo : cornerCombinations) {
+            
+            // Case 1: in correct corner, wrong orientation
+            if (cube.front.getCell(0, 0) == cornerCombo.charAt(0) && cube.up.getCell(2, 0) == cornerCombo.charAt(1) && cube.left.getCell(0, 2) == cornerCombo.charAt(2)) {
+                cube.makeMove("F'");
+                cube.makeMove("D'");
+                cube.makeMove("F");
+            }
+            else if (cube.left.getCell(0, 2) == cornerCombo.charAt(0) && cube.front.getCell(0, 0) == cornerCombo.charAt(1) && cube.up.getCell(2, 0) == cornerCombo.charAt(2)) {
+                cube.makeMove("L");
+                cube.makeMove("D");
+                cube.makeMove("L'");
+            }
+            // Case 2: bottom layer, wrong corner
+            if (cornerCombo.indexOf(cube.back.getCell(2, 2)) >= 0 && cornerCombo.indexOf(cube.left.getCell(2, 0)) >= 0 && cornerCombo.indexOf(cube.down.getCell(2, 0)) >= 0) {
+                cube.makeMove("D");
+            }
+            else if (cornerCombo.indexOf(cube.front.getCell(2, 2)) >= 0 && cornerCombo.indexOf(cube.right.getCell(2, 0)) >= 0 && cornerCombo.indexOf(cube.down.getCell(0, 2)) >= 0) {
+                cube.makeMove("D'");
+            }
+            else if (cornerCombo.indexOf(cube.right.getCell(2, 2)) >= 0 && cornerCombo.indexOf(cube.back.getCell(2, 0)) >= 0 && cornerCombo.indexOf(cube.down.getCell(2, 2)) >= 0) {
+                cube.makeMove("D2");
+            }
+            // Case 3: top layer, wrong corner
+            else if (cornerCombo.indexOf(cube.up.getCell(0, 0)) >= 0 && cornerCombo.indexOf(cube.back.getCell(0, 2)) >= 0 && cornerCombo.indexOf(cube.left.getCell(0, 0)) >= 0) {
+                cube.makeMove("B");
+                cube.makeMove("D");
+                cube.makeMove("B'");
+            }
+            else if (cornerCombo.indexOf(cube.up.getCell(2, 2)) >= 0 && cornerCombo.indexOf(cube.front.getCell(0, 2)) >= 0 && cornerCombo.indexOf(cube.right.getCell(0, 0)) >= 0) {
+                cube.makeMove("R'");
+                cube.makeMove("D'");
+                cube.makeMove("R");
+            }
+            else if (cornerCombo.indexOf(cube.up.getCell(0, 2)) >= 0 && cornerCombo.indexOf(cube.right.getCell(0, 2)) >= 0 && cornerCombo.indexOf(cube.back.getCell(0, 0)) >= 0) {
+                cube.makeMove("R");
+                cube.makeMove("D2");
+                cube.makeMove("R'");
+            }
+            // Case 4: bottom layer, under destination corner
+            if (cube.left.getCell(2, 2) == cornerCombo.charAt(0) && cube.down.getCell(0, 0) == cornerCombo.charAt(1) && cube.front.getCell(2, 0) == cornerCombo.charAt(2)) {
+                cube.makeMove("L");
+                cube.makeMove("D");
+                cube.makeMove("L'");
+            }
+            else if (cube.front.getCell(2, 0) == cornerCombo.charAt(0) && cube.left.getCell(2, 2) == cornerCombo.charAt(1) && cube.down.getCell(0, 0) == cornerCombo.charAt(2)) {
+                cube.makeMove("F'");
+                cube.makeMove("D'");
+                cube.makeMove("F");
+            }
+            else if (cube.down.getCell(0, 0) == cornerCombo.charAt(0) && cube.front.getCell(2, 0) == cornerCombo.charAt(1) && cube.left.getCell(2, 2) == cornerCombo.charAt(2)) {
+                cube.makeMove("L");
+                cube.makeMove("B");
+                cube.makeMove("D2");
+                cube.makeMove("B'");
+                cube.makeMove("L'");
+            }
+
+            cube.makeMove("Y");
+        }
+
+        cube.printCube();
 
         return movesMade;
     }
