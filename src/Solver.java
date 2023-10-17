@@ -260,9 +260,6 @@ public class Solver {
 
         System.out.println("--- Stage 2: White Corners ---");
 
-        // Start with red-green corner
-
-
         String[] cornerCombinations = new String[] {"WGR", "WRB", "WBO", "WOG"};
 
         for (String cornerCombo : cornerCombinations) {
@@ -324,6 +321,97 @@ public class Solver {
             }
 
             cube.makeMove("Y");
+        }
+
+        cube.printCube();
+
+        System.out.println("--- Stage 3: Second Layer ---");
+
+        cube.makeMove("X2");
+        cube.makeMove("Y2");
+
+        String[] edgeCombinations = new String[] {"RB", "GR", "OG", "BO"};
+
+        for (String edgeCombo : edgeCombinations) {
+            
+            // Check middle layer for edge piece
+            if (cube.left.getCell(1, 2) == edgeCombo.charAt(0) && cube.front.getCell(1, 0) == edgeCombo.charAt(1)) {
+                // wrong orientation - do left algorithm to get piece out of position
+                cube.makeMove("U'");
+                cube.makeMove("L'");
+                cube.makeMove("U");
+                cube.makeMove("L");
+                cube.makeMove("U");
+                cube.makeMove("F");
+                cube.makeMove("U'");
+                cube.makeMove("F'");
+            }
+            else if (edgeCombo.indexOf(cube.front.getCell(1, 2)) >= 0 && edgeCombo.indexOf(cube.right.getCell(1, 0)) >= 0) {
+                cube.makeMove("U'");
+                cube.makeMove("F'");
+                cube.makeMove("U");
+                cube.makeMove("F");
+                cube.makeMove("U");
+                cube.makeMove("R");
+                cube.makeMove("U'");
+                cube.makeMove("R'");
+            }
+            else if (edgeCombo.indexOf(cube.right.getCell(1, 2)) >= 0 && edgeCombo.indexOf(cube.back.getCell(1, 0)) >= 0) {
+                cube.makeMove("U'");
+                cube.makeMove("R'");
+                cube.makeMove("U");
+                cube.makeMove("R");
+                cube.makeMove("U");
+                cube.makeMove("B");
+                cube.makeMove("U'");
+                cube.makeMove("B'");
+            }
+            else if (edgeCombo.indexOf(cube.back.getCell(1, 2)) >= 0 && edgeCombo.indexOf(cube.left.getCell(1, 0)) >= 0) {
+                cube.makeMove("U'");
+                cube.makeMove("B'");
+                cube.makeMove("U");
+                cube.makeMove("B");
+                cube.makeMove("U");
+                cube.makeMove("L");
+                cube.makeMove("U'");
+                cube.makeMove("L'");
+            }
+            
+            // Move edge piece into correct position on top layer
+            if ((cube.left.getCell(0, 1) == edgeCombo.charAt(0) && cube.up.getCell(1, 0) == edgeCombo.charAt(1)) || (cube.back.getCell(0, 1) == edgeCombo.charAt(1) && cube.up.getCell(0, 1) == edgeCombo.charAt(0))) {
+                cube.makeMove("U'");
+            }
+            else if ((cube.right.getCell(0, 1) == edgeCombo.charAt(0) && cube.up.getCell(1, 2) == edgeCombo.charAt(1)) || (cube.front.getCell(0, 1) == edgeCombo.charAt(1) && cube.up.getCell(2, 1) == edgeCombo.charAt(0))) {
+                cube.makeMove("U");
+            }
+            else if ((cube.back.getCell(0, 1) == edgeCombo.charAt(0) && cube.up.getCell(0, 1) == edgeCombo.charAt(1)) || (cube.right.getCell(0, 1) == edgeCombo.charAt(1) && cube.up.getCell(1, 2) == edgeCombo.charAt(0))) {
+                cube.makeMove("U2");
+            }
+
+            // Depending on orientation of piece on top layer, do either left/right algorithm
+            if (cube.front.getCell(0, 1) == edgeCombo.charAt(0) && cube.up.getCell(2, 1) == edgeCombo.charAt(1)) {
+                cube.makeMove("U'");
+                cube.makeMove("L'");
+                cube.makeMove("U");
+                cube.makeMove("L");
+                cube.makeMove("U");
+                cube.makeMove("F");
+                cube.makeMove("U'");
+                cube.makeMove("F'");
+            }
+            else if (cube.left.getCell(0, 1) == edgeCombo.charAt(1) && cube.up.getCell(1, 0) == edgeCombo.charAt(0)) {
+                cube.makeMove("U");
+                cube.makeMove("F");
+                cube.makeMove("U'");
+                cube.makeMove("F'");
+                cube.makeMove("U'");
+                cube.makeMove("L'");
+                cube.makeMove("U");
+                cube.makeMove("L");
+            }
+
+            cube.makeMove("Y");
+
         }
 
         cube.printCube();
