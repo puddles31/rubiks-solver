@@ -585,6 +585,56 @@ public class Solver {
 
         cube.printCube();
 
+        System.out.println("--- Stage 7: Orient Yellow Corners ---");
+
+        // Check for a non-yellow piece on top face, use U moves to get into position
+        while (true) {
+            if (cube.up.getCell(0, 2) != 'Y') {
+                cube.makeMove("U");
+            }
+            else if (cube.up.getCell(2, 0) != 'Y') {
+                cube.makeMove("U'");
+            }
+            else if (cube.up.getCell(0, 0) != 'Y') {
+                cube.makeMove("U2");
+            }
+            else if (cube.up.getCell(2, 2) == 'Y') {
+                // All yellow corners correctly oriented!
+                break;
+            }
+
+            while (cube.up.getCell(2, 2) != 'Y') {
+                    cube.makeMove("R'");
+                    cube.makeMove("D'");
+                    cube.makeMove("R");
+                    cube.makeMove("D");
+            }
+        }
+
+        // Orient cube so red is front
+        if (cube.left.getCell(1, 1) == 'R') {
+            cube.makeMove("Y'");
+        }
+        else if (cube.right.getCell(1, 1) == 'R') {
+            cube.makeMove("Y");
+        }
+        else if (cube.back.getCell(1, 1) == 'R') {
+            cube.makeMove("Y2");
+        }
+
+        // Rotate top layer to solve
+        if (cube.left.getCell(0, 1) == 'R') {
+            cube.makeMove("U'");
+        }
+        else if (cube.right.getCell(0, 1) == 'R') {
+            cube.makeMove("U");
+        }
+        else if (cube.back.getCell(0, 1) == 'R') {
+            cube.makeMove("U2");
+        }
+
+        cube.printCube();
+
         return movesMade;
     }
 }
