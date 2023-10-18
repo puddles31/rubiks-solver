@@ -460,7 +460,72 @@ public class Solver {
             cube.makeMove("R'");
             cube.makeMove("F'");
         }
+
+        // Orient cube so red is front
+        if (cube.left.getCell(1, 1) == 'R') {
+            cube.makeMove("Y'");
+        }
+        else if (cube.right.getCell(1, 1) == 'R') {
+            cube.makeMove("Y");
+        }
+        else if (cube.back.getCell(1, 1) == 'R') {
+            cube.makeMove("Y2");
+        }
         
+        cube.printCube();
+
+        System.out.println("--- Stage 5: Yellow Edges ---");
+
+        // Rotate top face so red-yellow edge in correct position
+        if (cube.left.getCell(0, 1) == 'R') {
+            cube.makeMove("U'");
+        }
+        else if (cube.right.getCell(0, 1) == 'R') {
+            cube.makeMove("U");
+        }
+        else if (cube.back.getCell(0, 1) == 'R') {
+            cube.makeMove("U2");
+        }
+
+        // Step 1: get blue-yellow edge into correct position
+        if (cube.right.getCell(0, 1) == 'B') {
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U");
+            cube.makeMove("R'");
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U2");
+            cube.makeMove("R'");
+            cube.makeMove("U");
+        }
+        else if (cube.back.getCell(0, 1) == 'B') {
+            cube.makeMove("Y'");
+            cube.makeMove("R");
+            cube.makeMove("U");
+            cube.makeMove("R'");
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U2");
+            cube.makeMove("R'");
+            cube.makeMove("U");
+            cube.makeMove("Y");
+        }
+
+        // Step 2: get green-yellow and orange-yellow edges into correct positions
+        if (cube.right.getCell(0, 1) == 'O') {
+            cube.makeMove("Y2");
+            cube.makeMove("R");
+            cube.makeMove("U");
+            cube.makeMove("R'");
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U2");
+            cube.makeMove("R'");
+            cube.makeMove("U");
+            cube.makeMove("Y2");
+        }
+
         cube.printCube();
 
         return movesMade;
