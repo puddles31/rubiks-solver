@@ -260,9 +260,9 @@ public class Solver {
 
         System.out.println("--- Stage 2: White Corners ---");
 
-        String[] cornerCombinations = new String[] {"WGR", "WRB", "WBO", "WOG"};
+        String[] whiteCornerCombinations = new String[] {"WGR", "WRB", "WBO", "WOG"};
 
-        for (String cornerCombo : cornerCombinations) {
+        for (String cornerCombo : whiteCornerCombinations) {
             
             // Case 1: in correct corner, wrong orientation
             if (cube.front.getCell(0, 0) == cornerCombo.charAt(0) && cube.up.getCell(2, 0) == cornerCombo.charAt(1) && cube.left.getCell(0, 2) == cornerCombo.charAt(2)) {
@@ -524,6 +524,63 @@ public class Solver {
             cube.makeMove("R'");
             cube.makeMove("U");
             cube.makeMove("Y2");
+        }
+
+        cube.printCube();
+
+        System.out.println("--- Stage 6: Position Yellow Corners ---");
+
+        String[] yellowCornerCombinations = new String[] {"YRG", "YGO", "YOB", "YBR"};
+        boolean cornerFound = false;
+
+        // First, look for a corner already in the correct position.
+        for (String cornerCombo : yellowCornerCombinations) {
+
+            // If front-right corner in position, set boolean to true
+            if (cornerCombo.indexOf(cube.front.getCell(0, 2)) >= 0 && cornerCombo.indexOf(cube.right.getCell(0, 0)) >= 0 && cornerCombo.indexOf(cube.up.getCell(2, 2)) >= 0) {
+                cornerFound = true;
+                break;
+            }
+            else {
+                cube.makeMove("Y");
+            }
+        }
+        
+        // If no corners in position, perform algorithm to get one corner in position
+        if (!cornerFound) {
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U'");
+            cube.makeMove("L'");
+            cube.makeMove("U");
+            cube.makeMove("R'");
+            cube.makeMove("U'");
+            cube.makeMove("L");
+
+            // Rotate cube until top-right corner in position
+            for (String cornerCombo : yellowCornerCombinations) {
+                if (cornerCombo.indexOf(cube.front.getCell(0, 2)) >= 0 && cornerCombo.indexOf(cube.right.getCell(0, 0)) >= 0 && cornerCombo.indexOf(cube.up.getCell(2, 2)) >= 0) {
+                    break;
+                }
+                else {
+                    cube.makeMove("Y");
+                }
+            }
+        }
+        
+        // Create a string for the target front-left corner
+        String targetCorner = "Y" + cube.left.getCell(1, 1) + cube.front.getCell(1, 1);
+
+        // While the front-left corner isn't in position, perform the algorithm
+        while (!(targetCorner.indexOf(cube.left.getCell(0, 2)) >= 0 && targetCorner.indexOf(cube.front.getCell(0, 0)) >= 0 && targetCorner.indexOf(cube.up.getCell(2, 0)) >= 0)) {
+            cube.makeMove("U");
+            cube.makeMove("R");
+            cube.makeMove("U'");
+            cube.makeMove("L'");
+            cube.makeMove("U");
+            cube.makeMove("R'");
+            cube.makeMove("U'");
+            cube.makeMove("L");
         }
 
         cube.printCube();
