@@ -9,26 +9,32 @@ public class Solver {
 
 
     public static void main(String[] args) {
-        // Setup dummy print stream to disable println
-        PrintStream originalStream = System.out;
+        // // Setup dummy print stream to disable println
+        // PrintStream originalStream = System.out;
 
-        PrintStream dummyStream = new PrintStream(new OutputStream(){
-            public void write(int b) { }
-        });
+        // PrintStream dummyStream = new PrintStream(new OutputStream(){
+        //     public void write(int b) { }
+        // });
 
-        System.setOut(dummyStream);
+        // System.setOut(dummyStream);
 
 
-        // Create a new cube and shuffle it
-        Cube cube = new Cube();
-        ArrayList<String> shuffleMoves = new ArrayList<String>();
-        shuffleCube(cube, shuffleMoves);
+        // // Create a new cube and shuffle it
+        // Cube cube = new Cube();
+        // ArrayList<String> shuffleMoves = new ArrayList<String>();
+        // shuffleCube(cube, shuffleMoves);
 
-        // Enable the original print stream
-        System.setOut(originalStream);
+        // // Enable the original print stream
+        // System.setOut(originalStream);
 
-        // Print cube, solve it
-        System.out.println("Shuffle moves:\n" + shuffleMoves.toString());
+        // // Print cube, solve it
+        // System.out.println("Shuffle moves:\n" + shuffleMoves.toString());
+
+
+
+        // Create a new cube from user input
+        Cube cube = makeNewCube();
+
         System.out.println("Initial cube state:");
         cube.printCube();
         solve(cube);
@@ -66,7 +72,7 @@ public class Solver {
                 input = "";
 
                 while (!input.equals("W") && !input.equals("G") && !input.equals("R") && !input.equals("B") && !input.equals("O") && !input.equals("Y")) {
-                    System.out.println("Enter the colour of cell " + j + " on face " + (i + 1) + ":");
+                    System.out.println("Enter the colour ('R', 'G', 'B', 'O', 'W', 'Y') of cell " + (j + 1) + " on the " + getFaceName(i) + " face:");
                     input = sc.nextLine().toUpperCase();
                 }
                 
@@ -76,6 +82,24 @@ public class Solver {
 
         sc.close();
         return new Cube(inputColours);
+    }
+
+    private static String getFaceName(int sideNo) {
+        switch (sideNo) {
+            case 0:
+                return "front";
+            case 1:
+                return "left";
+            case 2:
+                return "right";
+            case 3:
+                return "back";
+            case 4:
+                return "top";
+            case 5:
+                return "bottom";
+        }
+        return null;
     }
 
     private static Cube shuffleCube(Cube cube, ArrayList<String> movesMade) {
